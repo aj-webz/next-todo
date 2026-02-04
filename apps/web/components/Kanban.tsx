@@ -1,7 +1,6 @@
-"use client";
-
-import { useEffect, useState } from "react";
+"use client"
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+
 import { format } from "date-fns";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@workspace/ui/components/card";
@@ -10,15 +9,12 @@ import { Button } from "@workspace/ui/components/button";
 import { cn } from "@workspace/ui/lib/utils";
 
 import type { Todo, TodoStatus } from "@repo/shared";
+import { useUpdateTodoStatus, useDeleteTodo } from '../hooks/queryhook';
 import {
-    useTodoQuery,
-    useUpdateTodoStatus,
-    useDeleteTodo,
-} from "../hooks/queryhook";
+    useTodoQuery
+} from '../hooks/queryhook';
 
-/* -------------------------------
-   Helpers
--------------------------------- */
+
 
 const isTodoStatus = (value: string): value is TodoStatus =>
     value === "in-progress" || value === "completed";
@@ -40,87 +36,35 @@ const statusColumn: {
         },
     ];
 
-/* ===============================
-   KANBAN BOARD
-================================ */
+
 
 export const KanbanBoard = () => {
     const { data: todos = [], isLoading } = useTodoQuery();
     const updateTodoStatus = useUpdateTodoStatus();
 
-    /**
-     * LOCAL UI STATE (IMPORTANT)
-     * -------------------------
-     * This is what makes drag feel instant.
-     * React Query alone cannot do this.
-     */
-    const [columns, setColumns] = useState<Record<TodoStatus, Todo[]>>({
-        "in-progress": [],
-        completed: [],
-    });
-
-
-    useEffect(() => {
-        const grouped: Record<TodoStatus, Todo[]> = {
-            "in-progress": [],
-            completed: [],
-        };
-
-        for (const todo of todos) {
-            grouped[todo.status].push(todo);
-        }
-
-        setColumns((prev) => {
-            
-            const prevJson = JSON.stringify(prev);
-            const nextJson = JSON.stringify(grouped);
-
-            if (prevJson === nextJson) {
-                return prev; 
-            }
-
-            return grouped;
-        });
-    }, [todos]);
-
-
     if (isLoading) {
         return <div className="p-6">Loading todos...</div>;
     }
 
-    
-    const onDragEnd = (result) => {
+    const todosByStatus: Record<TodoStatus, Todo[]> = {
+        "in-progress": [],
+        completed: [],
+    };
+
+    for (const todo of todos) {
+        todosByStatus[todo.status].push(todo);
+    }
+
+    const onDragEnd = (result: any) => {
         const { destination, source, draggableId } = result;
 
         if (!destination) return;
         if (destination.droppableId === source.droppableId) return;
+
         if (!isTodoStatus(destination.droppableId)) return;
 
         const todoId = draggableId.replace("todo-", "");
 
-
-        setColumns((prev) => {
-            const sourceList = [...prev[source.droppableId as TodoStatus]];
-            const destList = [...prev[destination.droppableId as TodoStatus]];
-
-            const [moved] = sourceList.splice(source.index, 1);
-
-            const updatedTodo: Todo = {
-                ...moved,
-                status: destination.droppableId,
-                completed: destination.droppableId === "completed",
-            };
-
-            destList.splice(destination.index, 0, updatedTodo);
-
-            return {
-                ...prev,
-                [source.droppableId]: sourceList,
-                [destination.droppableId]: destList,
-            };
-        });
-
-        
         updateTodoStatus.mutate({
             id: todoId,
             status: destination.droppableId,
@@ -134,7 +78,7 @@ export const KanbanBoard = () => {
                     <Card key={column.id}>
                         <CardHeader>
                             <CardTitle>
-                                {column.label} ({columns[column.id].length})
+                                {column.label} ({todosByStatus[column.id].length})
                             </CardTitle>
                         </CardHeader>
 
@@ -145,7 +89,7 @@ export const KanbanBoard = () => {
                                     {...provided.droppableProps}
                                     className="space-y-4 min-h-[100px]"
                                 >
-                                    {columns[column.id].map((todo, index) => (
+                                    {todosByStatus[column.id].map((todo, index) => (
                                         <TodoCard
                                             key={todo.id}
                                             todo={todo}
@@ -192,7 +136,8 @@ const TodoCard = ({
                             <Badge>{todo.status}</Badge>
 
                             <p className="text-xs text-muted-foreground">
-                                Created: {format(new Date(todo.createdAt), "dd MMM yyyy")}
+                                Created:{" "}
+                                {format(new Date(todo.createdAt), "dd MMM yyyy")}
                             </p>
 
                             <Button
