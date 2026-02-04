@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "version": "1.0.0",
+  "main": "dist/index.js",
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./dist/index.js"
   },
   "scripts": {
     "dev": "pnpm exec tsx watch --env-file ../../.env  src/index.ts",
