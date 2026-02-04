@@ -18,5 +18,16 @@
   "packageManager": "pnpm@10.4.1",
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
+    "@hookform/resolvers": "^5.2.2",
+    "date-fns": "^4.1.0",
+    "dotenv": "^17.2.3",
+    "hono": "^4.11.7",
+    "navigation-menu": "^1.0.0",
+    "react-hook-form": "^7.71.1",
+    "shadcn": "^3.8.2",
+    "zod": "^4.3.6"
   }
 }

@@ -1,0 +1,15 @@
+{
+    "extends": "@workspace/typescript-config/base.json",
+    "compilerOptions": {
+        "outDir": "dist",
+        "rootDir": "src",
+        "declaration": true,
+        "composite": false,
+        "module": "es2022",
+        "moduleDetection": "auto",
+        "moduleResolution": "bundler",
+    },
+    "include": [
+        "src"
+    ]
+}
