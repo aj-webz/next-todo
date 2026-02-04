@@ -1,6 +1,11 @@
-"use client"
-import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+"use client";
 
+import { 
+    DragDropContext, 
+    Droppable, 
+    Draggable, 
+    DropResult 
+} from "@hello-pangea/dnd";
 import { format } from "date-fns";
 
 import { Card, CardHeader, CardTitle, CardContent } from "@workspace/ui/components/card";
@@ -9,12 +14,11 @@ import { Button } from "@workspace/ui/components/button";
 import { cn } from "@workspace/ui/lib/utils";
 
 import type { Todo, TodoStatus } from "@repo/shared";
-import { useUpdateTodoStatus, useDeleteTodo } from '../hooks/queryhook';
-import {
-    useTodoQuery
+import { 
+    useUpdateTodoStatus, 
+    useDeleteTodo, 
+    useTodoQuery 
 } from '../hooks/queryhook';
-
-
 
 const isTodoStatus = (value: string): value is TodoStatus =>
     value === "in-progress" || value === "completed";
@@ -24,19 +28,17 @@ const statusColumn: {
     label: string;
     borderColor: string;
 }[] = [
-        {
-            id: "in-progress",
-            label: "In Progress",
-            borderColor: "border-blue-400",
-        },
-        {
-            id: "completed",
-            label: "Completed",
-            borderColor: "border-green-400",
-        },
-    ];
-
-
+    {
+        id: "in-progress",
+        label: "In Progress",
+        borderColor: "border-blue-400",
+    },
+    {
+        id: "completed",
+        label: "Completed",
+        borderColor: "border-green-400",
+    },
+];
 
 export const KanbanBoard = () => {
     const { data: todos = [], isLoading } = useTodoQuery();
@@ -55,7 +57,7 @@ export const KanbanBoard = () => {
         todosByStatus[todo.status].push(todo);
     }
 
-    const onDragEnd = (result: any) => {
+    const onDragEnd = (result: DropResult) => {
         const { destination, source, draggableId } = result;
 
         if (!destination) return;
@@ -107,8 +109,6 @@ export const KanbanBoard = () => {
         </DragDropContext>
     );
 };
-
-
 
 const TodoCard = ({
     todo,
