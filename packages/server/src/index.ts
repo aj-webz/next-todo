@@ -4,7 +4,9 @@ import { getDb, todos } from "@repo/db";
 import { logger } from "hono/logger";
 import { nanoid } from "nanoid";
 
-const app = new Hono();
+const app = new Hono().basePath("/api");
+
+
 
 app.use("*", logger());
 

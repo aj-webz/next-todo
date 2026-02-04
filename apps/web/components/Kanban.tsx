@@ -4,7 +4,7 @@ import {
     DragDropContext, 
     Droppable, 
     Draggable, 
-    DropResult 
+    DropResult,
 } from "@hello-pangea/dnd";
 import { format } from "date-fns";
 
