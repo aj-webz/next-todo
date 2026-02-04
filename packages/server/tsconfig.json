@@ -10,10 +10,11 @@
     "types": ["node"],
     "rootDir": "src",
     "outDir": "dist",
+    "baseUrl": ".", 
     "paths": {
-      "@repo/db": ["../packages/db/src"]
+      "@/*": ["./src/*"]
     }
   },
-  "include": ["src/index.ts"],
+  "include": ["src/**/*"], // Changed from ["src/index.ts"] to include everything
   "exclude": ["node_modules", "dist"]
 }
